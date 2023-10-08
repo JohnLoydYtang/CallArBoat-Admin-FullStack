@@ -5,7 +5,6 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 
-
 function Scanner() {
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
