@@ -27,7 +27,7 @@ function Scanner() {
               [
                 {
                   text: 'OK',
-                  onPress: () => navigation.navigate('StartScreen'),
+                  onPress: () => navigation.navigate('FlashScreen'),
                 },
               ]
             );

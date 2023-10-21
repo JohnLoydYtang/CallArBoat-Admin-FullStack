@@ -1,47 +1,74 @@
+import React, { useEffect ,useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import { StyleSheet, SafeAreaView, View, Image, ActivityIndicator } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { navigationRef } from './rootNavigation';
+import { AuthProvider } from './AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Scanner from './screens/Scanner';
+import GetStarted from './screens/getStarted';
+import SignIn from './screens/sign-in';
+import SignUp from './screens/sign-up';
 
-const QrPlaceHolder = require('./assets/images/qrplaceholder.png');
+const LogoImage = require('./assets/images/LOGO.png');
 
-function StartScreen() {
-  const navigation = useNavigation();
+const FlashScreen = ({ navigation }) => {
+  const delay = 4000; 
+
+  setTimeout(() => {
+    navigation.navigate('GetStarted');
+  }, delay);
+
   return (
-    <View style={styles.container}>
-
-      <View style={styles.LoginButton}>
-       <TouchableOpacity style={styles.LoginContainer}>
-          <Text style={styles.Text3}>Login</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.Text1}>Scanner QR Code</Text>
-      <Image source={QrPlaceHolder} style={styles.Image} />
-
-      <View style={styles.Button}>
-       <TouchableOpacity style={styles.ButtonContainer} onPress={() => navigation.navigate('Scanner') }>
-          <Text style={styles.Text2}>Scan QR</Text>
-        </TouchableOpacity>
-      </View>
-
+    <SafeAreaView style={styles.container}>
+      <View style={styles.imagecontainer}>
+        <Image source ={LogoImage} style={styles.image}/>  
+      </View> 
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const value = await AsyncStorage.getItem('isLoggedIn');
+      if (value !== null) {
+        setIsLoggedIn(true);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
+      <AuthProvider>
       <Stack.Navigator>
-        <Stack.Screen name="StartScreen" component={StartScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="FlashScreen" component={FlashScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="GetStarted" component={GetStarted} options={{ headerShown: false }}/>
+        <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}/>
+        <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
         <Stack.Screen name="Scanner" component={Scanner} options={{ headerShown: false }}/>
       </Stack.Navigator>
+      </AuthProvider>
     </NavigationContainer>
   );
 };
@@ -50,7 +77,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4A79E5',
+    backgroundColor: 'whiet',
     alignItems: 'center',
     justifyContent: 'center',
   },
