@@ -1,4 +1,4 @@
-import { db } from '../firebaseConfig';
+import { db } from '../back-end/firebaseConfig';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { StatusBar, KeyboardAvoidingView, TextInput, Text, TouchableOpacity, Modal, View} from "react-native";
@@ -9,16 +9,16 @@ import styles from '../assets/css/screensStyle/sign-upStyle';
 
 const SignUp = ({ navigation }) => {
   const [name, onChangeText] = useState('');
-  const [username, onChangeUsername] = useState('');
+  const [email, onChangeemail] = useState('');
   const [password, onChangePassword] = useState('');
   const [error, setError] = useState('');
   const [nameError, setNameError] = useState('');
-  const [usernameError, setUsernameError] = useState('');
+  const [emailError, setemailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
   const handleSignUp = async () => {
     setNameError('');
-    setUsernameError('');
+    setemailError('');
     setPasswordError('');
     setError('');
 
@@ -27,13 +27,13 @@ const SignUp = ({ navigation }) => {
       return;
     }
 
-   if (username.trim() === '') {
-      setUsernameError('Please input your username');
+   if (email.trim() === '') {
+      setemailError('Please input your email');
       return;
     }
     
-    if (!username.trim().includes('@') || !username.trim().includes('.com')) {
-      setUsernameError('Please enter a valid email address');
+    if (!email.trim().includes('@') || !email.trim().includes('.com')) {
+      setemailError('Please enter a valid email address');
       return;
     }
     
@@ -49,7 +49,7 @@ const SignUp = ({ navigation }) => {
     try {
       const auth = getAuth(); // Initialize the auth object
 
-      const userCredential = await createUserWithEmailAndPassword(auth, username, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
       // Set the display name for the user
       await updateProfile(auth.currentUser, {
@@ -63,8 +63,7 @@ const SignUp = ({ navigation }) => {
       await setDoc(doc(usersCollection), {
         scanner_id: userCredential.user.uid, // Store the user's ID in the document
         scanner_name: name,
-        scanner_username: username,
-        scanner_password: password,
+        scanner_email: email,
       });
       
 
@@ -72,7 +71,7 @@ const SignUp = ({ navigation }) => {
       navigation.navigate('SignIn');
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        setEmailError('Email is already in use');
+        setemailError('Email is already in use');
       } else {
         console.error('Error saving data:', error);
       }
@@ -92,12 +91,12 @@ const SignUp = ({ navigation }) => {
             placeholder="Name"
         />
 
-        {usernameError !== '' && <Text style={styles.error}>{usernameError}</Text>}
+        {emailError !== '' && <Text style={styles.error}>{emailError}</Text>}
         <TextInput
             style={styles.input}
-            onChangeText={text => onChangeUsername(text)}
-            value={username}
-            placeholder="Username"
+            onChangeText={text => onChangeemail(text)}
+            value={email}
+            placeholder="Email"
         />
         
 

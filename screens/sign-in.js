@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react';
 import { CheckBox } from 'react-native-elements';
 import { StatusBar, KeyboardAvoidingView, TextInput, View, Image, Text, TouchableOpacity} from "react-native";
 import { signInWithEmailAndPassword  } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
-import { AuthContext } from '../AuthContext'; // Import the AuthContext
+import { auth } from '../back-end/firebaseConfig';
+import { AuthContext } from '../back-end/AuthContext'; // Import the AuthContext
 
 //CSS
 import styles from '../assets/css/screensStyle/sign-inStyle';
@@ -15,6 +15,9 @@ const SignIn = ({navigation}) => {
     const [password, onChangePassword] = React.useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
+
+    const { isAuthenticated, logout } = useContext(AuthContext);
+    console.log('isAuthenticated:', isAuthenticated);
 
     const { login } = useContext(AuthContext); // Access the login function from AuthContext
 
@@ -84,16 +87,6 @@ const SignIn = ({navigation}) => {
 
             <TouchableOpacity style={styles.ButtonDesign} onPress={handleSignIn}>
                 <Text style={styles.buttonText}>Sign In</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-                <Text style={styles.text1}>Forgot Your Password?</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.commontext}>DON'T HAVE AN ACCOUNT?</Text>
-
-            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                <Text style={styles.text2}>SIGN UP</Text>
             </TouchableOpacity>
 
             <StatusBar style="auto"/>

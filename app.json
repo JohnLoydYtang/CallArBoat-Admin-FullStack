@@ -16,10 +16,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/Icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.callarboat.CallArBoatAdmin"
     },
     "web": {
       "favicon": "./assets/Icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6bfe283a-37c6-463f-85d0-adc8c3561c39"
+      }
     }
   }
 }
